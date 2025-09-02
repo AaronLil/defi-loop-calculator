@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang-key="title">Calculadora Montinho &gt; Montão</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
+
+    <!-- Language Switcher -->
+    <div id="lang-switcher" class="fixed top-4 right-4 z-10 flex space-x-1 bg-gray-700 rounded-lg p-1">
+        <button data-lang="pt" class="lang-btn px-3 py-1 text-sm font-bold rounded-md transition active">PT</button>
+        <button data-lang="en" class="lang-btn px-3 py-1 text-sm font-bold rounded-md transition">EN</button>
+    </div>
+
+    <div class="w-full max-w-4xl mx-auto">
+        <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 md:p-8 card-glow">
+            <!-- Cabeçalho -->
+            <div class="text-center mb-8">
+                <h1 data-lang-key="mainTitle" class="text-3xl md:text-4xl font-bold text-blue-400">Calculadora Montinho
+                    &gt; Montão</h1>
+                <p data-lang-key="subtitle" class="text-gray-400 mt-2">Simule sua alavancagem em protocolos como AAVE.
+                </p>
+            </div>
+
+            <!-- Formulário de Entrada -->
+            <div class="space-y-6 mb-8">
+                <!-- Asset Selector -->
+                <div>
+                    <label data-lang-key="assetLabel"
+                        class="block text-sm font-medium text-gray-300 mb-2">Colateral</label>
+                    <div class="flex space-x-1 bg-gray-700 rounded-lg p-1 w-full">
+                        <button data-asset="bitcoin"
+                            class="asset-btn w-1/2 px-3 py-1 text-sm font-bold rounded-md transition active">BTC</button>
+                        <button data-asset="ethereum"
+                            class="asset-btn w-1/2 px-3 py-1 text-sm font-bold rounded-md transition">ETH</button>
+                    </div>
+                </div>
+                <div>
+                    <label for="initialAmount" data-lang-key="initialAmountLabel"
+                        class="block text-sm font-medium text-gray-300 mb-2">Quantidade Inicial</label>
+                    <input type="number" id="initialAmount" value="1"
+                        class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                </div>
+
+                <div>
+                    <label for="assetPrice" data-lang-key="assetPriceLabel"
+                        class="block text-sm font-medium text-gray-300 mb-2">Preço (USD)</label>
+                    <div class="relative w-full">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                            $</div>
+                        <input type="number" id="assetPrice" value="65000"
+                            class="w-full bg-gray-700 border border-gray-600 rounded-lg pl-7 pr-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                    </div>
+                </div>
+
+                <!-- Novo campo: Dívida Atual (Opcional) -->
+                <div>
+                    <label for="currentDebt" data-lang-key="currentDebtLabel"
+                        class="block text-sm font-medium text-gray-300 mb-2">Dívida Atual (Opcional)</label>
+                    <div class="relative w-full">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                            $
+                        </div>
+                        <input type="number" id="currentDebt" value="" min="0" step="any"
+                            class="w-full bg-gray-700 border border-gray-600 rounded-lg pl-7 pr-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label for="ltv" data-lang-key="ltvLabel"
+                            class="block text-sm font-medium text-gray-300 mb-2">LTV (%)</label>
+                        <input type="number" id="ltv" value="70"
+                            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                    </div>
+                    <div>
+                        <label for="liquidationThreshold" data-lang-key="liquidationThresholdLabel"
+                            class="block text-sm font-medium text-gray-300 mb-2">Limite de Liquidação (%)</label>
+                        <input type="number" id="liquidationThreshold" value="75"
+                            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botão de Calcular -->
+            <div class="text-center mt-6">
+                <button id="calculateBtn" data-lang-key="calculateBtn"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50">
+                    Calcular Loops
+                </button>
+            </div>
+        </div>
+
+
+        <!-- Seção de Resultados -->
+        <div id="results" class="hidden">
+            <div class="bg-gray-800 border border-gray-700 rounded-xl p-6 md:p-8 mb-6">
+                <h2 data-lang-key="resultsTitle" class="text-2xl font-bold text-center mb-6 text-blue-300">Resultados da
+                    Simulação</h2>
+
+                <!-- Loop selector card -->
+                <div class="flex justify-center mb-6">
+                    <div class="bg-gray-700 p-4 rounded-lg flex flex-col items-center justify-center">
+                        <p data-lang-key="totalLoopsLabel" class="text-sm text-gray-400 mb-2">Loops Selecionados</p>
+                        <div class="flex items-center justify-center space-x-2">
+                            <button id="loopMinusBtn"
+                                class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-1 px-2 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed">-</button>
+                            <span id="currentLoopDisplay" class="text-xl font-bold text-blue-300">0</span>
+                            <button id="loopPlusBtn"
+                                class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-1 px-2 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed">+</button>
+                        </div>
+                        <span id="loopCounter" class="text-xs font-bold text-blue-300 mt-2">Loop 0 / 0</span>
+                    </div>
+                </div>
+
+                <!-- Preset buttons -->
+                <div class="flex justify-center space-x-4 mb-6">
+                    <button id="presetConservative" data-lang-key="presetConservative"
+                        class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold py-2 px-4 rounded-md">Conservador</button>
+                    <button id="presetRecommended" data-lang-key="presetRecommended"
+                        class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold py-2 px-4 rounded-md">Recomendado</button>
+                    <button id="presetDegen" data-lang-key="presetDegen"
+                        class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold py-2 px-4 rounded-md">Degen</button>
+                </div>
+
+                <!-- Other result cards -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 text-center">
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <p data-lang-key="healthFactorLabel" class="text-sm text-gray-400">Fator de Saúde</p>
+                        <p id="healthFactorDisplay" class="text-2xl font-bold text-green-400">--</p>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <p data-lang-key="liquidationPriceLabel" class="text-sm text-gray-400">Preço de Liquidação</p>
+                        <p id="liquidationPrice" class="text-xl font-bold text-white">--</p>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <p data-lang-key="finalCollateralLabel" class="text-sm text-gray-400">Colateral Final</p>
+                        <p id="finalCollateral" class="text-xl font-bold text-white">--</p>
+                        <p id="finalCollateralUsd" class="text-xs text-gray-400">--</p>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <p data-lang-key="finalDebtLabel" class="text-sm text-gray-400">Dívida Final (USD)</p>
+                        <p id="finalDebt" class="text-xl font-bold text-white">--</p>
+                    </div>
+                </div>
+
+                <!-- Tabela de Detalhes -->
+                <div class="mt-8">
+                    <h3 data-lang-key="fullDetailsTitle" class="text-xl font-bold text-center mb-4 text-blue-300">
+                        Detalhes de Todos os Loops</h3>
+                    <div class="overflow-x-auto max-h-60">
+                        <table class="w-full text-sm text-left text-gray-300">
+                            <thead class="text-xs text-blue-300 uppercase bg-gray-700 sticky top-0">
+                                <tr>
+                                    <th scope="col" data-lang-key="tableLoop" class="px-6 py-3 rounded-l-lg">Loop</th>
+                                    <th scope="col" data-lang-key="tableCollateral" class="px-6 py-3">Colateral</th>
+                                    <th scope="col" data-lang-key="tableCollateralUsd" class="px-6 py-3">Colateral (USD)
+                                    </th>
+                                    <th scope="col" data-lang-key="tableDebt" class="px-6 py-3">Dívida (USD)</th>
+                                    <th scope="col" data-lang-key="tableHealthFactor" class="px-6 py-3">Fator de Saúde
+                                    </th>
+                                    <th scope="col" data-lang-key="tableLeverage" class="px-6 py-3 rounded-r-lg">
+                                        Alavancagem</th>
+                                </tr>
+                            </thead>
+                            <tbody id="loopsTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="warning"
+            class="mt-6 text-center text-sm text-yellow-400 bg-yellow-900 bg-opacity-30 p-4 rounded-lg hidden">
+            <p><strong data-lang-key="warningTitle">Atenção:</strong> <span data-lang-key="warningText">Esta é uma
+                    simulação. Os valores reais podem variar devido a taxas de transação, flutuações de preço
+                    (slippage) e mudanças nos parâmetros do protocolo. Sempre gerencie seu risco com cuidado.</span>
+            </p>
+        </div>
+
+        <!-- Footer with Credits -->
+        <footer class="text-center mt-6 pt-4 border-t border-gray-700/50">
+            <p class="text-xs text-gray-500 flex items-center justify-center space-x-2">
+                <span data-lang-key="developedBy">Desenvolvido por</span>
+                <span class="text-blue-400">LeLeCo</span>
+                <span>/</span>
+                <a href="https://github.com/AaronLil" target="_blank" rel="noopener noreferrer"
+                    class="text-blue-400 hover:text-blue-300">Aaron Lil</a>
+                <span>&bull;</span>
+                <button id="donate-btn" data-lang-key="donate"
+                    class="text-blue-400 hover:text-blue-300 font-semibold">Nos pague um café</button>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Donation Modal -->
+    <div id="donate-modal"
+        class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-gray-800 rounded-lg p-6 w-full max-w-sm text-center border border-gray-700 relative">
+            <button id="close-modal-btn"
+                class="absolute top-2 right-2 text-gray-500 hover:text-white text-xl">&times;</button>
+            <h3 data-lang-key="donateTitle" class="text-lg font-bold text-white mb-4">Nos pague um café</h3>
+            <div class="flex bg-gray-700 rounded-lg p-1 mb-4">
+                <button id="btc-tab"
+                    class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition bg-blue-600 text-white">Bitcoin</button>
+                <button id="eth-tab"
+                    class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition text-gray-300 hover:text-white">USDC
+                    (Base)</button>
+            </div>
+            <!-- BTC Content -->
+            <div id="btc-content" class="tab-content">
+                <p data-lang-key="btcSubtitle" class="text-sm text-gray-400 mb-4">Escaneie o QR code ou copie o
+                    endereço.</p>
+                <div class="bg-white p-2 rounded-lg inline-block mb-3"><img id="qr-code-btc" src=""
+                        alt="Bitcoin QR Code"></div>
+                <div class="bg-gray-900 p-2 rounded-lg flex items-center justify-between">
+                    <input id="address-btc" type="text"
+                        class="bg-transparent text-xs text-gray-300 w-full outline-none mr-2" readonly>
+                    <button data-copy-target="address-btc" data-lang-key="copy"
+                        class="copy-btn bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1 px-3 rounded-md whitespace-nowrap">Copiar</button>
+                </div>
+            </div>
+            <!-- ETH Content -->
+            <div id="eth-content" class="tab-content hidden">
+                <p data-lang-key="ethSubtitle" class="text-sm text-gray-400 mb-4">Escaneie o QR code ou copie o
+                    endereço.</p>
+                <div class="bg-white p-2 rounded-lg inline-block mb-3"><img id="qr-code-eth" src="" alt="ETH QR Code">
+                </div>
+                <div class="bg-gray-900 p-2 rounded-lg flex items-center justify-between">
+                    <input id="address-eth" type="text"
+                        class="bg-transparent text-xs text-gray-300 w-full outline-none mr-2" readonly>
+                    <button data-copy-target="address-eth" data-lang-key="copy"
+                        class="copy-btn bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1 px-3 rounded-md whitespace-nowrap">Copiar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="translations.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
