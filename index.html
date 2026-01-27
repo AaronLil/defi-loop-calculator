@@ -206,14 +206,28 @@
                 class="absolute top-2 right-2 text-gray-500 hover:text-white text-xl">&times;</button>
             <h3 data-lang-key="donateTitle" class="text-lg font-bold text-white mb-4">Nos pague um café</h3>
             <div class="flex bg-gray-700 rounded-lg p-1 mb-4">
+                <button id="ln-tab"
+                    class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition bg-blue-600 text-white">Lightning</button>
                 <button id="btc-tab"
-                    class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition bg-blue-600 text-white">Bitcoin</button>
+                    class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition text-gray-300 hover:text-white">Bitcoin</button>
                 <button id="eth-tab"
-                    class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition text-gray-300 hover:text-white">USDC
-                    (Base)</button>
+                    class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition text-gray-300 hover:text-white">Stablecoins</button>
+            </div>
+            <!-- Lightning Content -->
+            <div id="ln-content" class="tab-content">
+                <p data-lang-key="lnSubtitle" class="text-sm text-gray-400 mb-4">Escaneie o QR code ou copie o endereço.
+                </p>
+                <div class="bg-white p-2 rounded-lg inline-block mb-3"><img id="qr-code-ln" src=""
+                        alt="Lightning QR Code"></div>
+                <div class="bg-gray-900 p-2 rounded-lg flex items-center justify-between">
+                    <input id="address-ln" type="text"
+                        class="bg-transparent text-xs text-gray-300 w-full outline-none mr-2" readonly>
+                    <button data-copy-target="address-ln" data-lang-key="copy"
+                        class="copy-btn bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1 px-3 rounded-md whitespace-nowrap">Copiar</button>
+                </div>
             </div>
             <!-- BTC Content -->
-            <div id="btc-content" class="tab-content">
+            <div id="btc-content" class="tab-content hidden">
                 <p data-lang-key="btcSubtitle" class="text-sm text-gray-400 mb-4">Escaneie o QR code ou copie o
                     endereço.</p>
                 <div class="bg-white p-2 rounded-lg inline-block mb-3"><img id="qr-code-btc" src=""
@@ -225,10 +239,10 @@
                         class="copy-btn bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1 px-3 rounded-md whitespace-nowrap">Copiar</button>
                 </div>
             </div>
-            <!-- ETH Content -->
+            <!-- EVM Content -->
             <div id="eth-content" class="tab-content hidden">
-                <p data-lang-key="ethSubtitle" class="text-sm text-gray-400 mb-4">Escaneie o QR code ou copie o
-                    endereço.</p>
+                <p data-lang-key="ethSubtitle" class="text-sm text-gray-400 mb-4">Envie USDC/USDT nas redes Base ou
+                    Polygon.</p>
                 <div class="bg-white p-2 rounded-lg inline-block mb-3"><img id="qr-code-eth" src="" alt="ETH QR Code">
                 </div>
                 <div class="bg-gray-900 p-2 rounded-lg flex items-center justify-between">

@@ -15,8 +15,9 @@ const assetParams = {
 };
 
 const donationAddresses = {
-    btc: "bc1psnea5ypndy5j5v7hwe0way0vzjevvwygw4uj97q3p4r8wawsnrvqxdx6kl",
-    eth: "0x67665A0888bF0FED7a04f122c5620A4149e1902E"
+    ln: "lnbc1p5hsa79pp54stqsafxm4hvlftvc7nsl7cqt26tq595f52ydjuku3ea4v0l8k9qdq2gdhkven9v5cqzzsxqyz5vqsp58nnc9ak20s8w0rs2q39errf30wsem3snfpuvhv926vt08xewzs2s9qyyssqmunfyczjgzqc43pexq5rtvstv3k9x542dalnwusqr69kr9g02qprskzl6rvxdgc963wyhx82rzn6f6rqevryypzenxusvrwcu7spwqqpjppmd6",
+    btc: "bc1p9kqm68dl6g42rpgk7y574jjm3vu2fr0djz9tsm99aqphqj0x7u3s37q9hh",
+    eth: "0xdD307C734049c6D87BBb7ca7c0D958772d0c9b6A"
 };
 
 // --- DOM Elements (Cached for performance) ---
@@ -344,42 +345,85 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const donateModal = document.getElementById('donate-modal');
+    const lnTab = document.getElementById('ln-tab');
     const btcTab = document.getElementById('btc-tab');
     const ethTab = document.getElementById('eth-tab');
+    const lnContent = document.getElementById('ln-content');
     const btcContent = document.getElementById('btc-content');
     const ethContent = document.getElementById('eth-content');
 
-    function switchTab(activeTab, activeContent, inactiveTab, inactiveContent) {
+    function switchTab(activeTab, activeContent) {
+        [lnTab, btcTab, ethTab].forEach(tab => {
+            tab.classList.remove('bg-blue-600', 'text-white');
+            tab.classList.add('text-gray-300');
+        });
+        [lnContent, btcContent, ethContent].forEach(content => {
+            content.classList.add('hidden');
+        });
         activeTab.classList.add('bg-blue-600', 'text-white');
         activeTab.classList.remove('text-gray-300');
-        inactiveTab.classList.remove('bg-blue-600', 'text-white');
-        inactiveTab.classList.add('text-gray-300');
         activeContent.classList.remove('hidden');
-        inactiveContent.classList.add('hidden');
     }
-    btcTab.addEventListener('click', () => switchTab(btcTab, btcContent, ethTab, ethContent));
-    ethTab.addEventListener('click', () => switchTab(ethTab, ethContent, btcTab, btcContent));
+    lnTab.addEventListener('click', () => switchTab(lnTab, lnContent));
+    btcTab.addEventListener('click', () => switchTab(btcTab, btcContent));
+    ethTab.addEventListener('click', () => switchTab(ethTab, ethContent));
 
     document.getElementById('donate-btn').addEventListener('click', () => {
+        document.getElementById('address-ln').value = donationAddresses.ln;
+        document.getElementById('qr-code-ln').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${donationAddresses.ln}`;
         document.getElementById('address-btc').value = donationAddresses.btc;
         document.getElementById('qr-code-btc').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${donationAddresses.btc}`;
         document.getElementById('address-eth').value = donationAddresses.eth;
         document.getElementById('qr-code-eth').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${donationAddresses.eth}`;
-        switchTab(btcTab, btcContent, ethTab, ethContent);
+        switchTab(lnTab, lnContent);
         donateModal.classList.remove('hidden');
     });
 
     document.getElementById('close-modal-btn').addEventListener('click', () => donateModal.classList.add('hidden'));
-    donateModal.addEventListener('click', (e) => { if (e.target === donateModal) donateModal.classList.add('hidden'); });
+
+    // Track mousedown to prevent modal closing when dragging text selection
+    let mousedownTarget = null;
+    donateModal.addEventListener('mousedown', (e) => {
+        mousedownTarget = e.target;
+    });
+    donateModal.addEventListener('mouseup', (e) => {
+        if (e.target === donateModal && mousedownTarget === donateModal) {
+            donateModal.classList.add('hidden');
+        }
+        mousedownTarget = null;
+    });
 
     document.querySelectorAll('.copy-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', async (e) => {
             const targetInput = document.getElementById(e.target.dataset.copyTarget);
-            targetInput.select();
-            document.execCommand('copy');
             const originalText = e.target.textContent;
-            e.target.textContent = translations[currentLanguage].copied;
-            setTimeout(() => { e.target.textContent = originalText; }, 1500);
+
+            if (navigator.clipboard && window.isSecureContext) {
+                try {
+                    await navigator.clipboard.writeText(targetInput.value);
+                    e.target.textContent = translations[currentLanguage].copied;
+                    setTimeout(() => { e.target.textContent = originalText; }, 1500);
+                } catch (err) {
+                    fallbackCopy(targetInput.value);
+                    e.target.textContent = translations[currentLanguage].copied;
+                    setTimeout(() => { e.target.textContent = originalText; }, 1500);
+                }
+            } else {
+                fallbackCopy(targetInput.value);
+                e.target.textContent = translations[currentLanguage].copied;
+                setTimeout(() => { e.target.textContent = originalText; }, 1500);
+            }
         });
     });
+
+    function fallbackCopy(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+    }
 });
