@@ -15,7 +15,8 @@ const assetParams = {
 };
 
 const donationAddresses = {
-    ln: "lnbc1p5hsa79pp54stqsafxm4hvlftvc7nsl7cqt26tq595f52ydjuku3ea4v0l8k9qdq2gdhkven9v5cqzzsxqyz5vqsp58nnc9ak20s8w0rs2q39errf30wsem3snfpuvhv926vt08xewzs2s9qyyssqmunfyczjgzqc43pexq5rtvstv3k9x542dalnwusqr69kr9g02qprskzl6rvxdgc963wyhx82rzn6f6rqevryypzenxusvrwcu7spwqqpjppmd6",
+    // Lightning address temporarily disabled
+    // ln: "lnbc1p5hsa79pp54stqsafxm4hvlftvc7nsl7cqt26tq595f52ydjuku3ea4v0l8k9qdq2gdhkven9v5cqzzsxqyz5vqsp58nnc9ak20s8w0rs2q39errf30wsem3snfpuvhv926vt08xewzs2s9qyyssqmunfyczjgzqc43pexq5rtvstv3k9x542dalnwusqr69kr9g02qprskzl6rvxdgc963wyhx82rzn6f6rqevryypzenxusvrwcu7spwqqpjppmd6",
     btc: "bc1p9kqm68dl6g42rpgk7y574jjm3vu2fr0djz9tsm99aqphqj0x7u3s37q9hh",
     eth: "0xdD307C734049c6D87BBb7ca7c0D958772d0c9b6A"
 };
@@ -345,37 +346,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const donateModal = document.getElementById('donate-modal');
-    const lnTab = document.getElementById('ln-tab');
+    // const lnTab = document.getElementById('ln-tab'); // Lightning tab temporarily disabled
     const btcTab = document.getElementById('btc-tab');
     const ethTab = document.getElementById('eth-tab');
-    const lnContent = document.getElementById('ln-content');
+    // const lnContent = document.getElementById('ln-content'); // Lightning content temporarily disabled
     const btcContent = document.getElementById('btc-content');
     const ethContent = document.getElementById('eth-content');
 
     function switchTab(activeTab, activeContent) {
-        [lnTab, btcTab, ethTab].forEach(tab => {
+        [btcTab, ethTab].forEach(tab => {
             tab.classList.remove('bg-blue-600', 'text-white');
             tab.classList.add('text-gray-300');
         });
-        [lnContent, btcContent, ethContent].forEach(content => {
+        [btcContent, ethContent].forEach(content => {
             content.classList.add('hidden');
         });
         activeTab.classList.add('bg-blue-600', 'text-white');
         activeTab.classList.remove('text-gray-300');
         activeContent.classList.remove('hidden');
     }
-    lnTab.addEventListener('click', () => switchTab(lnTab, lnContent));
     btcTab.addEventListener('click', () => switchTab(btcTab, btcContent));
     ethTab.addEventListener('click', () => switchTab(ethTab, ethContent));
 
     document.getElementById('donate-btn').addEventListener('click', () => {
-        document.getElementById('address-ln').value = donationAddresses.ln;
-        document.getElementById('qr-code-ln').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${donationAddresses.ln}`;
         document.getElementById('address-btc').value = donationAddresses.btc;
         document.getElementById('qr-code-btc').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${donationAddresses.btc}`;
         document.getElementById('address-eth').value = donationAddresses.eth;
         document.getElementById('qr-code-eth').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${donationAddresses.eth}`;
-        switchTab(lnTab, lnContent);
+        switchTab(btcTab, btcContent);
         donateModal.classList.remove('hidden');
     });
 
